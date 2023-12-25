@@ -2,26 +2,28 @@ let input = document.getElementById("input-box");
 let tasks = document.getElementById("tasks");
 let add = document.querySelector("button");
 
-add.onclick = function mo() {
-  if (input.value === "") {
-    // alert("You Should Write Something");
+add.onclick = function () {
+  if (input.value !== "") {
+    // Create  Element
+    let li = document.createElement("li");
+    li.innerHTML = input.value;
+    tasks.appendChild(li);
+
+    // Create Span To Delete Element
+    let span = document.createElement("span");
+    span.innerHTML = " \u00d7";
+    li.appendChild(span);
+  } else {
+    // SweetAlert2
     Swal.fire({
       title: "Oops...",
       text: "You Should Write Something !",
       icon: "error",
     });
-  } else {
-    let li = document.createElement("li");
-    li.innerHTML = input.value;
-    tasks.appendChild(li);
-
-    let span = document.createElement("span");
-    span.innerHTML = " \u00d7";
-    li.appendChild(span);
   }
 
   input.value = "";
-  saveData();
+  setData();
 };
 
 tasks.addEventListener(
@@ -29,8 +31,9 @@ tasks.addEventListener(
   function (e) {
     if (e.target.tagName === "LI") {
       e.target.classList.toggle("checked");
-      saveData();
+      setData();
     } else if (e.target.tagName === "SPAN") {
+      // Start SweetAlert2
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -46,23 +49,26 @@ tasks.addEventListener(
             text: "Your file has been deleted.",
             icon: "success",
           });
+          // Event to remove the parent element
           e.target.parentElement.remove();
-          saveData();
+          setData();
         }
       });
+      // End SweetAlert2
     }
   },
   false
 );
-
-function saveData() {
+//Save (set) Data In localStorage
+function setData() {
   localStorage.setItem("task", tasks.innerHTML);
 }
 
-function showTask() {
+//Get Data From localStorage
+function getData() {
   tasks.innerHTML = localStorage.getItem("task");
 }
 
-showTask();
+getData();
 
 // localStorage.clear();
